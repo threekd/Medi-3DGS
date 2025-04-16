@@ -1271,65 +1271,76 @@ async function main() {
         splatData[3] == 10;
 
     // Function to handle the image click event:
-    function handleImageClick(imageName) {
-        console.log("Image clicked:", imageName);
-        selectFile(`data/${imageName}.splat`);
-    }
+    // Function to handle the image click event:
+function handleImageClick(imageName) {
+    console.log("Image clicked:", imageName);
+    selectFile(`data/${imageName}.splat`);
 
-    const selectFile = (filePath) => {
-        console.log(`Selecting file: ${filePath}`);
-        fetch(filePath)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch file: ${response.statusText}`);
-                }
-                return response.arrayBuffer();
-            })
-            .then(buffer => {
-                splatData = new Uint8Array(buffer);
-                console.log("Loaded", Math.floor(splatData.length / rowLength));
+    // Automatically collapse the parent <details> elements
+    collapseDetails("dataDetails");
+}
 
-                // Ensure the buffer length is valid
-                if (splatData.length % 4 !== 0) {
-                    console.error('Error: Data length is not a multiple of 4', splatData.length);
-                    return;
-                }
+const selectFile = (filePath) => {
+    console.log(`Selecting file: ${filePath}`);
+    fetch(filePath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to fetch file: ${response.statusText}`);
+            }
+            return response.arrayBuffer();
+        })
+        .then(buffer => {
+            splatData = new Uint8Array(buffer);
+            console.log("Loaded", Math.floor(splatData.length / rowLength));
 
-                if (isPly(splatData)) {
-                    worker.postMessage({ ply: splatData.buffer, save: true });
-                } else {
-                    worker.postMessage({
-                        buffer: splatData.buffer,
-                        vertexCount: Math.floor(splatData.length / rowLength),
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error loading file:', error);
-            });
-    };
+            // Ensure the buffer length is valid
+            if (splatData.length % 4 !== 0) {
+                console.error('Error: Data length is not a multiple of 4', splatData.length);
+                return;
+            }
 
-    document.addEventListener("DOMContentLoaded", function() {
-        const imgs = [
-            { id: "previewImg_stag_beetle", name: "stag_beetle" },
-            { id: "previewImg_Maco", name: "Maco" }
-        ];
-
-        imgs.forEach(img => {
-            const element = document.getElementById(img.id);
-            if (element) {
-                console.log(`Binding click and touchstart event for ${img.id}`);
-                element.addEventListener("click", function() {
-                    console.log(`${img.id} clicked`);
-                    handleImageClick(img.name);
-                });
-                element.addEventListener("touchstart", function() {
-                    console.log(`${img.id} touched`);
-                    handleImageClick(img.name);
+            if (isPly(splatData)) {
+                worker.postMessage({ ply: splatData.buffer, save: true });
+            } else {
+                worker.postMessage({
+                    buffer: splatData.buffer,
+                    vertexCount: Math.floor(splatData.length / rowLength),
                 });
             }
+        })
+        .catch(error => {
+            console.error('Error loading file:', error);
         });
+};
+
+const collapseDetails = (detailsId) => {
+    const details = document.getElementById(detailsId);
+    if (details && details.open) {
+        details.open = false;
+    }
+};
+
+document.addEventListener("DOMContentLoaded", function() {
+    const imgs = [
+        { id: "previewImg_stag_beetle", name: "stag_beetle" },
+        { id: "previewImg_Maco", name: "Maco" }
+    ];
+
+    imgs.forEach(img => {
+        const element = document.getElementById(img.id);
+        if (element) {
+            console.log(`Binding click and touchstart event for ${img.id}`);
+            element.addEventListener("click", function() {
+                console.log(`${img.id} clicked`);
+                handleImageClick(img.name);
+            });
+            element.addEventListener("touchstart", function() {
+                console.log(`${img.id} touched`);
+                handleImageClick(img.name);
+            });
+        }
     });
+});
 	
 
     window.addEventListener("hashchange", (e) => {
