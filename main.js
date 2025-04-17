@@ -1302,8 +1302,11 @@ const processSplatData = (splatData) => {
 
     // Ensure the buffer length is valid
     if (splatData.length % 4 !== 0) {
-        console.error('Error: Data length is not a multiple of 4', splatData.length);
-        return;
+        console.warn('Warning: Data length is not a multiple of 4, padding with zeros');
+        const paddedLength = splatData.length + (4 - (splatData.length % 4));
+        const paddedData = new Uint8Array(paddedLength);
+        paddedData.set(splatData);
+        splatData = paddedData;
     }
 
     if (isPly(splatData)) {
