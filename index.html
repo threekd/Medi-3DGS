@@ -195,6 +195,25 @@
 				margin: 5px 0;
 				display: block;
 			}
+			
+			.scrollable-preview {
+			  width: 128px;        
+			  height: 100vh;              
+			  overflow-y: auto;          
+			  border: 1px solid #ccc;
+			  padding: 10px 0;             
+			  display: flex;
+			  flex-direction: column;
+			  gap: 8px;
+			  background: #fff;
+			  box-sizing: border-box;   
+			}
+
+			.scrollable-preview img {
+			  width: 100%;                
+			  height: auto;
+			  display: block;
+			}
 		</style>
 	</head>
 	<body>
@@ -217,9 +236,23 @@
 			</details>
 			<details id="dataDetails">
 				<summary>Data preview.</summary>
-				<div id="preview">
-					<img id="previewImg_stag_beetle" src="figures/stag_beetle.jpg" alt="Data1">
-					<img id="previewImg_Maco" src="figures/Maco.jpg" alt="Data2">
+				<div id="preview" class="scrollable-preview">
+				<img id="previewImg_Maco" src="figures/Maco.jpg" alt="Data_Maco">
+				<img id="previewImg_CTA" src="figures/CTA.jpg" alt="Data_CTA">
+				<img id="previewImg_Tooth" src="figures/Tooth.jpg" alt="Data_Tooth">
+				<img id="previewImg_Tibial-Fracture-after" src="figures/Tibial-Fracture-after.jpg" alt="Data_Tibial-Fracture-after">
+				<img id="previewImg_Tibial-Fracture-before" src="figures/Tibial-Fracture-before.jpg" alt="Data_Tibial-Fracture-before">
+				<img id="previewImg_pawpawsaurus" src="figures/pawpawsaurus.jpg" alt="Data_pawpawsaurus">
+				<img id="previewImg_Dog" src="figures/Dog.jpg" alt="Data_Dog">
+				<img id="previewImg_Artifix" src="figures/Artifix.jpg" alt="Data_Artifix">
+				<img id="previewImg_carp" src="figures/carp.jpg" alt="Data_carp">
+				<img id="previewImg_manix1" src="figures/manix1.jpg" alt="Data_manix1">
+				<img id="previewImg_cat" src="figures/cat.jpg" alt="Data_cat">
+				<img id="previewImg_stag_beetle" src="figures/stag_beetle.jpg" alt="Data_stag_beetle">
+				<img id="previewImg_kingsnake" src="figures/kingsnake.jpg" alt="Data_kingsnake">
+				<img id="previewImg_manix2" src="figures/manix2.jpg" alt="Data_manix2">
+				<img id="previewImg_spathorhynchus" src="figures/spathorhynchus.jpg" alt="Data_spathorhynchus">
+				<img id="previewImg_teapot" src="figures/teapot.jpg" alt="Data_teapot">
 				</div>
 			</details>
 		</div>

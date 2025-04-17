@@ -1354,6 +1354,20 @@ const collapseDetails = (detailsId) => {
 // Add event listeners for images and drag-and-drop functionality
 document.addEventListener("DOMContentLoaded", function() {
     const imgs = [
+	{ id: "previewImg_Tooth", name: "Tooth" },
+	{ id: "previewImg_Tibial-Fracture-before", name: "Tibial-Fracture-before" },
+	{ id: "previewImg_Tibial-Fracture-after", name: "Tibial-Fracture-after" },
+	{ id: "previewImg_teapot", name: "teapot" },
+	{ id: "previewImg_spathorhynchus", name: "spathorhynchus" },
+	{ id: "previewImg_pawpawsaurus", name: "pawpawsaurus" },
+	{ id: "previewImg_manix2", name: "manix2" },
+	{ id: "previewImg_manix1", name: "manix1" },
+	{ id: "previewImg_kingsnake", name: "kingsnake" },
+	{ id: "previewImg_Dog", name: "Dog" },
+	{ id: "previewImg_CTA", name: "CTA" },
+	{ id: "previewImg_cat", name: "cat" },
+	{ id: "previewImg_carp", name: "carp" },
+	{ id: "previewImg_Artifix", name: "Artifix" },
         { id: "previewImg_stag_beetle", name: "stag_beetle" },
         { id: "previewImg_Maco", name: "Maco" }
     ];
