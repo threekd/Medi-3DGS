@@ -1270,17 +1270,16 @@ async function main() {
         splatData[2] == 121 &&
         splatData[3] == 10;
 
-    // Function to handle the image click event:
-    // Function to handle the image click event:
+// Function to handle the image click event:
 function handleImageClick(imageName) {
     console.log("Image clicked:", imageName);
-    selectFile(`data/${imageName}.splat`);
+    selectFileByPath(`data/${imageName}.splat`);
 
     // Automatically collapse the parent <details> elements
     collapseDetails("dataDetails");
 }
 
-const selectFile = (filePath) => {
+const selectFileByPath = (filePath) => {
     console.log(`Selecting file: ${filePath}`);
     fetch(filePath)
         .then(response => {
@@ -1290,29 +1289,61 @@ const selectFile = (filePath) => {
             return response.arrayBuffer();
         })
         .then(buffer => {
-            splatData = new Uint8Array(buffer);
-            console.log("Loaded", Math.floor(splatData.length / rowLength));
-
-            // Ensure the buffer length is valid
-            if (splatData.length % 4 !== 0) {
-                console.error('Error: Data length is not a multiple of 4', splatData.length);
-                return;
-            }
-
-            if (isPly(splatData)) {
-                worker.postMessage({ ply: splatData.buffer, save: true });
-            } else {
-                worker.postMessage({
-                    buffer: splatData.buffer,
-                    vertexCount: Math.floor(splatData.length / rowLength),
-                });
-            }
+            processSplatData(new Uint8Array(buffer));
         })
         .catch(error => {
             console.error('Error loading file:', error);
         });
 };
 
+// Common function to process splat data
+const processSplatData = (splatData) => {
+    console.log("Loaded", Math.floor(splatData.length / rowLength));
+
+    // Ensure the buffer length is valid
+    if (splatData.length % 4 !== 0) {
+        console.error('Error: Data length is not a multiple of 4', splatData.length);
+        return;
+    }
+
+    if (isPly(splatData)) {
+        worker.postMessage({ ply: splatData.buffer, save: true });
+    } else {
+        worker.postMessage({
+            buffer: splatData.buffer,
+            vertexCount: Math.floor(splatData.length / rowLength),
+        });
+    }
+};
+
+// Function to handle file selection (used for drag-and-drop)
+const selectFile = (file) => {
+    const fr = new FileReader();
+    fr.onload = () => {
+        if (/\.json$/i.test(file.name)) {
+            cameras = JSON.parse(fr.result);
+            viewMatrix = getViewMatrix(cameras[0]);
+            projectionMatrix = getProjectionMatrix(
+                camera.fx / downsample,
+                camera.fy / downsample,
+                canvas.width,
+                canvas.height
+            );
+            gl.uniformMatrix4fv(u_projection, false, projectionMatrix);
+
+            console.log("Loaded Cameras");
+        } else {
+            processSplatData(new Uint8Array(fr.result));
+        }
+    };
+    if (/\.json$/i.test(file.name)) {
+        fr.readAsText(file);
+    } else {
+        fr.readAsArrayBuffer(file);
+    }
+};
+
+// Function to collapse <details> elements
 const collapseDetails = (detailsId) => {
     const details = document.getElementById(detailsId);
     if (details && details.open) {
@@ -1320,6 +1351,7 @@ const collapseDetails = (detailsId) => {
     }
 };
 
+// Add event listeners for images and drag-and-drop functionality
 document.addEventListener("DOMContentLoaded", function() {
     const imgs = [
         { id: "previewImg_stag_beetle", name: "stag_beetle" },
@@ -1340,8 +1372,23 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }
     });
+
+    // Add drag & drop functionality to the entire document
+    document.addEventListener("dragover", (event) => {
+        event.preventDefault();
+    });
+
+    document.addEventListener("drop", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const files = event.dataTransfer.files;
+        if (files.length > 0) {
+            selectFile(files[0]);
+        }
+    });
 });
-	
+        
 
     window.addEventListener("hashchange", (e) => {
         try {
